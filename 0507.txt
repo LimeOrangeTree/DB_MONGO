@@ -1,0 +1,284 @@
+mongo localhost:27017/updateTest
+db
+db.help()
+db.people.help()
+db.people.update
+--
+prompt=function(){
+  return (new Date())+">"
+}
+
+prompt=function(){
+  return db+">"
+}
+quit()
+---
+mongo first.js second.js
+mongo
+load('first.js')
+===
+use test
+1)내장형문서
+db.ord.insert({
+ord_id:"100",
+emp_name:"Magee",
+customer_name:"Womanspart(주)",
+ord_date:"1992-08-31",
+total:"601100",
+payment_type:"CREDIT",
+item:[
+	{item_id:"1",
+	product_name:"Bunny Boot",
+	item_price:"135",
+	qty:"500",
+	price:"67500"},
+	{item_id:"2",
+	product_name:"Pro Ski Boot",
+	item_price:"380",
+	qty:"400",
+	price:"152000"}
+	]
+})
+db.ord.find().pretty()
+2)확장형문서
+db.ord.insert({
+	ord_id:"200",
+	emp_name:"Tom",
+	customer_name:"Manspart(주)",
+	ord_date:"1992-08-30",
+	total:"601100",
+	payment_type:"CREDIT"
+})
+db.ord.update(
+	{ord_id:"200"},
+	{$set:
+		{item:[
+			{item_id:"1",
+			product_name:"Bunny Boot",
+			item_price:"135",
+			qty:"500",
+			price:"67500"},
+			{item_id:"2",
+			product_name:"Pro Ski Boot",
+			item_price:"380",
+			qty:"400",
+			price:"152000"}
+			]
+		}
+	})
+
+db.ord.find().pretty()
+db.ord.drop()
+
+3)Link
+show collections
+db.ord.insert({
+	ord_id:"100",
+	emp_name:"Magee",
+	customer_name:"Womanspart(주)",
+	ord_date:"1992-08-31",
+	total:"601100",
+	payment_type:"CREDIT"
+})
+
+i=db.ord.findOne({ord_id:"100"})
+db.ord_detail.insert({
+	item:[
+		{item_id:"1",
+		product_name:"Bunny Boot",
+		item_price:"135",
+		qty:"500",
+		price:"67500"},
+		{item_id:"2",
+		product_name:"Pro Ski Boot",
+		item_price:"380",
+		qty:"400",
+		price:"152000"}
+		],
+		ordid_id:ObjectId("5cd0df0eb46fcd5bb3d8a39d")
+})
+
+db.ord_detail.findOne({ordid_id:i._id})
+db.ord.drop()
+db.ord_detail.drop()
+
+4)DBRef함수
+x={
+	ord_id:"100",
+	emp_name:"Magee",
+	customer_name:"Womanspart(주)",
+	ord_date:"1992-08-31",
+	total:"601100",
+	payment_type:"CREDIT"
+}
+
+db.ord.save(x)
+db.ord.find()
+
+db.ord_detail.save({
+	ord_id:"100",
+	item:[
+		{item_id:"1",
+		product_name:"Bunny Boot",
+		item_price:"135",
+		qty:"500",
+		price:"67500"},
+		{item_id:"2",
+		product_name:"Pro Ski Boot",
+		item_price:"380",
+		qty:"400",
+		price:"152000"}
+		],
+	ordid_id:[new DBRef("ord",x._id)]
+})
+db.ord.drop()
+db.ord_detail.drop()
+--aggregate()
+$project  : select절
+$match    : where절
+$group    : group by 절
+$sort
+$limit
+$skip
+--부서번호가 10번이고 급여가 500~3000 인 사번,이름 출력
+db.employees.aggregate(
+	{$match:{$and:[{deptno:10},{sal:{$gte:500,$lte:3000}}]}},
+	{$project:{_id:0,empno:1,ename:1}
+	}
+)
+
+db.employees.aggregate(
+	{$match:{$and:[{deptno:10},{sal:{$gte:500,$lte:3000}}]}},
+	{$project:{_id:0,
+			empno:1,
+			ename:{$toLower:"$ename"},
+			substr_name:{$substr:["$ename",1,2]},
+			sal:1
+			}
+	}
+)
+--직업이 clerk 또는 salesman인 사원의 사번,이름 출력
+db.emplo yees.aggregate(
+	{$match:{$or:[{job:"CLERK"},{job:"SALESMAN"}]}},
+	{$project:{_id:0,
+			empno:1,
+			ename:1
+			}
+	}
+)
+--부서번호가 10번이고 직업이 clerk 또는 salesman인 사원의 급여가 500~3000 인 사번,이름 출력
+db.employees.aggregate(
+	{$match:{$or:[{job:"CLERK"},{job:"SALESMAN"}]}},
+	{$match:{$and:[{deptno:10},{sal:{$gte:500,$lte:3000}}]}},
+	{$project:{_id:0,
+			empno:1,
+			ename:1
+			}
+	}
+).pretty()
+--
+db.employees.aggregate(
+	{$match:{deptno:30}},
+	{$project:{_id:0,
+				empno:1,
+				amount:{sal:"$sal",
+						comm:"$comm"
+						}
+				}
+	}
+)
+--부서번호가 30번인 사원의 이름,급여,커미션 출력
+db.employees.aggregate(
+	{$match:{deptno:30}},
+	{$project:{_id:0,
+				ename:1,
+				sal:1,
+				comm:1
+			}
+	}
+)
+---
+{$ifNull:[표현식,치환값]}
+db.employees.aggregate(
+	{$match:{deptno:30}},
+	{$project:{_id:0,
+				ename:1,
+				sal:1,
+				comm:1,
+				comm2:{$ifNull:["$comm",0]}
+			}
+	}
+)
+---
+db.employees.aggregate(
+	{$match:{deptno:30}},
+	{$project:{_id:0,
+				ename:1,
+				sal:1,
+				comm:1,
+				comm2:{$ifNull:["$comm",0]},
+				pay:{$add:["$sal",{$ifNull:["$comm",0]} ]}
+			}
+	}
+)
+--
+db.employees.aggregate(
+	{$match:{deptno:30}},
+	{$project:{_id:0,
+				ename:1,
+				sal:1,
+				comm:1,
+				comm2:{$ifNull:["$comm",0]},
+				pay:{$add:["$sal",{$ifNull:["$comm",0]} ]}
+			}
+	},
+	{$sort:{ename:-1}},
+	{$skip:3},
+	{$limit:2}
+)
+db.dept.drop()
+db.dept.insert({
+	deptno:10,
+	dname:"영업부",
+	loc:"서울"
+	})
+db.dept.insert({
+	deptno:20,
+	dname:"총무부",
+	loc:"대전"
+	})
+db.dept.insert({
+	deptno:30,
+	dname:"관리부",
+	loc:"제주"
+	})
+db.dept.insert({
+	deptno:40,
+	dname:"전산부",
+	loc:"강원"
+	})
+===
+db.employees.aggregate([
+	{$project:{empno:1,ename:1,job:1,deptno:1}},
+	{$lookup:{
+			from:"dept",           //결합될 컬렉션
+			localField:"deptno",  //결합될 대상필드  
+			foreignField:"deptno", //결합할 대상필드
+			as:"dept_info"   //결합될 대상필드 별칭
+			}},
+	{$sort:{empno:-1}
+])
+db.location.insert({loc:"서울", manager:"홍길동"})
+db.location.insert({loc:"대전", manager:"콩쥐"})
+db.location.insert({loc:"제주", manager:"팥쥐"})
+db.location.insert({loc:"강원", manager:"심청"})
+--부서컬렉션과 location컬렉션을 조인하세요
+db.dept.aggregate([
+	{$project:{deptno:1,dname:1,loc:1}},
+	{$lookup:{
+			from:"location",           //결합될 컬렉션
+			localField:"loc",  //결합될 대상필드  
+			foreignField:"loc", //결합할 대상필드
+			as:"loc_info"   //결합될 대상필드 별칭
+			}}
+])

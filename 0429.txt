@@ -1,0 +1,155 @@
+==update
+db.컬렉션명.update({조건},{연산자:{수정내용},{옵션}})
+연산자 :$set,$inc,$unset
+옵션: multi,upsert
+db.people.update({name:'강동원'},{$set:{score:60}})
+db.people.update({name:'이효리'},{$inc:{age:1}})
+db.people.find()
+db.people.update({name:'김무열'},{$unset:{score:1}})
+db.people.update({name:'정우성'},{score:90})
+db.people.find()
+db.people.update({name:'홍길동'},{name:'홍길동',score:50},{upsert:true})
+db.people.find()
+db.people.update({name:'성춘향'},{$set:{score:50}},{upsert:true})
+db.people.update({age:20},{$set:{score:45}},{multi:true})
+==updateOne
+db.컬렉션명.update({조건},{연산자:{수정내용},{옵션}})
+연산자 :$set,$inc,$unset
+옵션: upsert
+db.people.updateOne({age:{$gt:25}},{$inc:{score:5}})
+db.people.updateOne({skills:{$size:2}},{$set:{skills:['python']}})
+==updateMany
+db.컬렉션명.updateMany({조건},{연산자:{수정내용}},{옵션}})
+연산자 :$set,$inc,$unset
+옵션: upsert
+db.people.updateMany({score:{$gte:50}},{$inc:{age:-1}})
+db.people.find()
+db.people.updateMany({age:{lte:25}},{$set:{score:65}})
+==replaceOne
+db.컬렉션명.replaceOne({조건},{수정내용},{옵션}})
+옵션: upsert
+db.people.replaceOne({name:'박보영'},{name:'박보영',score:100,skills:['python','java']})
+
+==findAndModify
+db.컬렉션명.findAndModify({query:조건,sort:정렬순서,remove:삭제여부,update:수정내용,upsert:추가여부})
+db.people.findAndModify({query:{age:{$lte:25}},update:{$set:{skills:['mongoDB']}}})
+db.people.findAndModify({query:{},sort:{age:1},update:{$inc:{age:1}}})   <####
+db.people.findAndModify({query:{score:{$lte:70}},remove:true})
+
+==findOneAndUpdate
+db.컬렉션명.findOneAndUpdate({조건},{수정내용},{옵션})
+연산자 :$set,$inc,$unset
+옵션: upsert,sort
+db.people.findOneAndUpdate({age:{$lte:25}},{$inc:{age:1}})
+db.people.findOneAndUpdate({score:{$exists:true}},{$set:{score:30}},{sort:{score:1}})
+
+==findOneAndReplace
+db.컬렉션명.findOneAndReplace({조건},{수정내용},{옵션})
+옵션: upsert,sort
+
+db.people.findOneAndReplace({score:{$lte:50}},{score:0})
+
+db.people.findOneAndReplace({},{age:100},{sort:{age:-1}})
+db.people.find()
+---	"books" Collection의 
+1)"_id"가 14인 Document의 "price" 중 "net"를 20000으로 변경하라.
+db.books.update( {_id : 14}, { $set : {"price.net" : 20000} } )
+2)"author"의 항목이 한 개인 첫 번째 Document의 "price" 중 "net"를 1000 증가시켜라.
+db.books.update( {author : {$size : 1}}, {$inc : {"price.net" : 1000} } )
+3)"publishing"이 "프리렉"인 Document의 "date"를 삭제하라.
+db.books.update( {publishing : "프리렉"}, {$unset : {date : 1}})
+4)"price"의 "sale"이 존재하지 않는 Document를 다음 Document로 치환하라.
+
+{maintitle : "클라우드 컴퓨팅 ", subtitle : ["개념 기술 구축체험"], author : ["나연묵" , "최종무", "박기웅"], publishing : "홍릉과학출판사", date : "2016-11-21", price : {net : 28000, sale : 26000} }
+
+db.books.update( { "price.sale" : { $exists : true }}, {maintitle : "클라우드 컴퓨팅1", subtitle : ["개념 기술 구축체험"], author : ["나연묵" , "최종무", "박기웅"], publishing : "홍릉과학출판사", date : "2016-11-21", price : {net : 28000, sale : 26000} },  { upsert : true } )
+
+5)"price"의 "net"가 20000이하인 모든 Document의 "price"의 "net"를 1000 증가시켜라.
+db.books.update( {"price.net" : {$lt : 20000} }, {$inc : {"price.net" : 1000}}, { multi : true })
+6)"subtitle"의 개수가 1개인 첫 번째 Document의 "price"의 "net"를 1000 증가시켜라.
+db.books.updateOne( {subtitle : {$size : 1} }, {$inc : {"price.net" : 1000}})
+7)"date"가 2017년인 첫 번째 Document의 "author"을 "홍길동"으로 변경하라.
+db.books.updateOne({date:{$regex:/^2017/}},{$set:{author:['홍길동']}})
+8)"_id"가 10이상인 모든 Document의 "price"의 "net"를 1000 감소시켜라.
+db.books.updateMany( { _id : {$gt : 10} }, {$inc : {"price.net" : -1000} } )
+9)"date"가 3월인 모든 Document의 "preview"를 5로 수정하라.
+db.books.updateMany( {date : { $regex : /^[0-9]{4}-03/}, {$set : {preview : 5}} )
+1)"author"에 "박응용"가 포함된 Document를 다음 Document로 수정하라.
+
+{maintitle : "점프 투 파이썬", author : ["박아지"], publishing : "이지스퍼블리싱", date : "2018-01-01", price : {net : 2000, sale : 18000}, review : 1, rank :  1}
+db.books.replaceOne( { author : {$all : ["박응용"]}}, {maintitle : "점프 투 파이썬", author : ["박아지"], publishing : "이지스퍼블리싱", date : "2018-01-01", price : {net : 2000, sale : 18000}, review : 1, rank :  1} )
+2)"author"가 2사람 이상인 Document의 "date"를 "2018-10-10"으로 수정하라.
+db.books.findAndModify( { query : {$where : "this.author.length >= 2"}, update : { $set : {date : "2018-10-10"} } } )
+3)"price"의 "net"가 가장 작은 Document의 "net"를 1000 증가시켜 수정하라.
+db.books.findAndModify( { query : {}, sort : { "price.net" : 1 }, update : { $inc : { "price.net" : 1 } } } )
+4)"rank"가 100 이상인 첫 번째 Document를 삭제하라.
+db.books.findAndModify( { query : { rank : { $gt : 100 } }, remove : true } )
+5)"translator"가 존재하는 첫 번째 Document의 "price"의 "net"를 1000 증가하라.
+db.books.findOneAndUpdate( { translator : { $exists : true } }, { $inc : { "price.net": 1000 } } )
+6)"date"가 존재하며 가장 작은 첫 번째 Document의 "price.sale"을 10000으로 수정하라.
+db.books.findOneAndUpdate( {date : { $exists : true }}, { $set : { "price.sale" : 10000 } }, {sort : {date : 1}}  )
+7)"price"의 "sale"이 존재하지 않는 첫 번째 Document의 "price"의 "net"를 50000으로 수정하라.
+db.books.findOneAndReplace( {"price.sale" : { $exists  : false } }, { "price.net" : 50000 } )
+8)"rank"가 가장 큰 첫 번째 Document의 "author"을 "장독대"로 수정하라.
+db.books.findOneAndReplace( { }, { author : ["장독대"] }, { sort : { rank : -1 } } )
+===정규식
+db.컬렉션명.find( {key:{$regex:/패턴/,$options:'옵션'}})
+옵션:i,m,x,s
+use findTest
+show collections
+db.order.find({"item.type":{$regex:/^ch/}},{})
+db.order.find({"item.type":{$regex:/^ch/,$options:"i"}},{})
+db.books.find({"author.0":{$regex:/^[A-Za-z]/}},{_id:0,maintitle:1,author:1})
+db.inventory.find({},{_id:0,item:1,qty:1})
+--inventory에서 item 이 P로 시작하고 글자수가 7글자인것의 item,qty 출력
+db.inventory.find({item:{$regex:/^P[a-z0-9]{6}$/}},{_id:0,item:1,qty:1})
+===삭제
+use removeTest
+db.user.insertMany( [ 
+{_id : 1, name : '김치국', part : '서버', title : '수석'},
+{_id : 2, name : '장독대', part : '개발', title : '선임'},
+{_id : 3, name : '이기자', part : '서비스', title : '책임'},
+{_id : 4, name : '장몽고', part : '행정', title : '수석'},
+{_id : 5, name : '정말로', part : '행정', title : '선임'},
+{_id : 6, name : '나확신', part : '개발', title : '책임'},
+{_id : 7, name : '박아지', part : '개발', title : '수석'},
+{_id : 8, name : '임기말', part : '서비스', title : '선임'},
+{_id : 9, name : '홍길동', part : '서버', title : '선임'},
+{_id : 10, name : '주일기', part : '개발', title : '책임'}
+] )
+--db.컬렉션명.remove({조건식})
+db.user.remove({name : '나확신'})
+db.user.find()
+db.user.remove({})
+
+db.user.remove({part : '행정'})
+db.user.find()
+--db.컬렉션명.deleteOne({조건식})
+db.user.deleteOne({"title" : "책임"})
+db.user.find()
+--db.컬렉션명.deleteMany({조건식})
+db.user.deleteMany({"part" : "서버"})
+--findOneAndDelete{{조건},{옵션}}
+옵션:sort
+db.user.findOneAndDelete({"part" : "개발"})
+db.user.find()
+db.user.findOneAndDelete({"part" : "개발"},{sort:{_id:-1}})
+db.user.find()
+---"books" Collection의
+1) "_id"가 10인 Document를 삭제하라.
+db.books.remove( { _id : 10 } )
+2) "price"의 "sale"이 존재하지 않는 모든 Document를 삭제하라.
+db.books.remove( {"price.sale" : { $exists  : false } } )
+3) "author"이 1개인 첫 번째 Document를 삭제하라.
+db.books.deleteOne( { author : {$size : 1} } )
+4) "data"가 2018년인 모든 Document를 삭제하라.
+db.books.deleteMany( { date : { $regex : /^2018/}
+5) "price"의 "sale"이 존재하는 첫 번째 Document를 삭제하라.
+db.books.findOneAndDelete( {"price.sale" : { $exists  : true } } )
+6) "author"가 한 개인 Document중에서 rank가 가장 높은 Document를 삭제하라.
+db.books.findOneAndDelete( { author : {$size : 1} }, { sort : { rank : -1 } } )
+7) "books" Collection의 모든 Document를 삭제하라.
+db.books.remove( {} )
+
+
+

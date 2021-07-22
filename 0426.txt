@@ -1,0 +1,130 @@
+--db.컬렉션명.find({조건식},{검색키}).보조명령()
+db.books.find()
+db.books.findOne()
+db.order.find({},{_id:0,item:1})
+db.inventory.find({},{_id:0,item:1,qty:1,status:1})
+db.inventory.find({},{item:0,qty:0,status:0})
+db.inventory.find({},{item:1,qty:0,status:1})
+db.inventory.find({},{_id:0,item:1,instock:1})
+--db.컬렉션명.find({},{key:{$slice:개수}})
+db.inventory.find({},{_id:0,item:1,size:1,instock:1})
+db.inventory.find({},{_id:0,item:1,size:1,instock:{$slice:1}})
+--_id,dim_cm,size,status,instock 감추고 tags 2개만 출력
+db.inventory.find
+	({},{_id:0,dim_cm:0,size:0,status:0,instock:0,tags:{$slice:2}})
+---
+db.order.find({_id:1},{})
+db.inventory.find({"item" : "Ruler"},{})
+db.inventory.find({"qty" : 10,status:"C"},{})
+--비교연산자 $eq,$ne,$gt,$gte,$in,$nin,
+db.order.find({amount:{$lte:200}},{})
+db.inventory.find({qty:{$gt:40,$lt:70}},{})
+db.inventory.find({item:{$gte:"M",$lt:"Q"}},{})
+db.order.find({amount:{$in:[100,200]}},{})
+db.inventory.find({status:{$nin:['C','D','E']}},{})
+--$and,$or, $not,$nor
+db.inventory.find({$or:[{"item" : "Scissors"},{"item" : "Ruler"}]},{})
+db.inventory.find({$and:[{"qty" : {$lt:55}},{"status" : "A"} ]},{})
+---------
+1)"book"s Collection에 있는 모든 Document를 "_id"만 감추고 출력하라.
+db.books.find( { }, {_id : 0} )
+2)"books" Collection에서 첫 번째 Document에서 "maintitle", "author", "price"만 출력하라.
+db.books.findOne( { }, {_id : 0,  maintitle : 1,  author : 1, price : 1} )
+3)"books" Collection에 있는 모든 Document에서 "_id", "translator", "supervise", "date"는 감추고 출력하라.
+db.books.find( { }, {_id : 0, translator : 0, supervise : 0, date : 0} )
+4)"books" Collection에서 첫 번째 Document에서 "maintitle", "author", "publishing"만 출력하라. 단, "author"은 한 개만 출력하라.
+db.books.findOne( { }, {_id : 0,  maintitle : 1, author : { $slice : 1 } , publishing : 1} )
+5)"books" Collection의 모든 Document에서 "_id", "translator", "supervise", "date", "review", "rank"는 감추고 출력하라. 단, "subtitle"은 한 개만 출력하라.
+db.books.find( { }, {_id : 0, translator : 0, supervise : 0, date : 0, review : 0, rank : 0, subtitle : {$slice : 1} } )
+-----조건지정---------
+1)"books" Collection에서 "_id"가 1인 것만 출력하라.
+db.books.find( {_id : 1} )
+2)"books" Collection에서 "publishing"이 "정보문화사"인 첫 번째 Document만 출력하라.
+db.books.findOne( {publishing : "정보문화사"} )
+3)"books" Collection에서 "review"가 3이면서 "publishing"이 "정보문화사"인 것의 "maintitle", "author", "publishing", "price"만 출력하라.
+db.books.find( {review : 3, publishing : "정보문화사"}, {_id : 0, maintitle : 1, author : 1, publishing : 1, price : 1} )
+4)"books" Collection에서 "review"가 3보다 크거나 같은 것의 첫 번째 Document만 "_id", "translator", "supervise", "date"를 제외하고 출력하라.
+db.books.findOne( {review : {$gte : 3}}, {_id : 0, translator : 0, supervise : 0, date : 0} )
+5)"books" Collection에서 "rank"가 1에서 100사이 인 것을 출력하라.
+db.books.find( {rank : {$gte : 1, $lte : 100} } )
+6)"books" Collection에서 "date"가 "2017"년도인 첫 번째 Document만 출력하라.
+db.books.findOne( {date : { $gte : "2017", $lt : "2018"}} )
+7)"books" Collection에서 "review"가 1이거나 3인 Document의 "maintitle", "subtitle", "review"만 출력하라. 단, "subtitle"은 1개만 출력하라.
+db.books.find( {review : {$in : [1, 3] } }, {_id : 0, maintitle : 1, subtitle : {$slice : 2}, review : 1} )
+8)"books" Collection에서 "publishing"가 "정보문화사"이거나 "이지스퍼블리싱"이 아닌 것의 첫 번째 Document에서 "_id", "translator", "supervise", "date", "preview", "rank"를 제외하고 출력하라. 단, "author"는 최대 2명까지 출력하라.
+
+db.books.findOne( {publishing : {$nin : ["정보문화사", "이지스퍼블리싱"] } }, {_id : 0, translator : 0, supervise : 0, date : 0, preview : 0, rank : 0, author : {$slice : 2} } )
+
+9)"books" Collection에서 "date"가 "2017-03-15"이거나 "2017-03-10"인 Document를 출력하라.
+
+db.books.find( {$or : [ {date : "2017-03-15"}, {date : "2017-03-10"} ]} )
+
+10)"books" Collection에서 "_id"가 10이거나 "review"가 3인 것의 첫 번째 Document만 출력하라.
+db.books.findOne( { $or : [ {_id : 10}, {review : 3} ] } )
+11)"books" Collection에서 "_id"가 10보다 크면서 "review"가 3보다 큰 Document의 "maintitle", "subtitle", "review", "author"만 출력하라. 단 "authors"는 1개만 출력하라.
+db.books.find( {$and : [ {_id : {$gte : 10}}, {review : {$gte : 3}} ]}, {_id : 0, maintitle : 1, subtitle : 1, review : 1, author : {$slice : 1}} )
+12)"books" Collection에서 "review"가 3보다 크지 않은 것의 첫 번째 Document 중에서 "_id", "translator", "supervise", "date", "preview", "rank"를 제외하고 출력하라. 단, "subtitle"은 1개만 출력하라.
+db.books.findOne( {review : {$not : {$gt : 3}}}, {_id : 0, translator : 0, supervise : 0, date : 0, preview : 0, rank : 0, subtitle : {$slice : 1}} )
+--내장형 문서조회
+db.order.find({item:{"category" : "candy", "type" : "lemon"}},{})
+db.order.find({item:{"type" : "lemon","category" : "candy" }},{})   -X
+
+db.inventory.find({"size.h":{$gte:5}},{})
+db.inventory.find({tags:"red"},{})
+db.inventory.find({tags:["red", "blue"]},{})
+db.inventory.find({tags:["blue","red"]},{})
+db.inventory.find({tags:{$all:["blue","red"]}},{})
+db.inventory.find({"dim_cm.0":{$lt:13}},{})
+db.inventory.find({tags:{$size:2}},{})
+db.inventory.find({instock:{ $elemMatch:{warehouse : "A", qty : 15}}},{})
+---$where연산자
+db.order.find({$where:'this.item.category.length>=7'},{})
+db.order.find({sale:{$exists:true},{})
+--보조명령
+db.order.find({amount:100},{}).pretty()
+db.order.find().sort({_id:-1})
+db.inventory.find().sort({qty:-1,item:1})
+db.inventory.find().count()
+db.inventory.find().limit(3)
+db.order.find().skip(3)
+--------------내장형 문서조회
+1)"books" Collection에서 "price"가 {net : 25000, sale : 22500}인 첫 번째 Document의 "maintitle", "subtitle", "review", "price", "author"만 출력하라. 단 "authors"는 1개만 출력하라.
+db.books.findOne( {price : {net : 25000, sale : 22500} }, {_id : 0, maintitle : 1, subtitle : 1, review : 1, price : 1, author : {$slice : 1 } })
+2)"books" Collection에서 "price" 중에서 "net"가 20000에서 30000인 Document의 "maintitle", "subtitle", "review", "prive.net"만 출력하라.
+
+db.books.find( {"price.net" : {$gt : 20000, $lt : 30000}},  {_id : 0, maintitle : 1, subtitle : 1, review : 1, "price.net" : 1} )
+
+----배열문서 조회
+1)"books" Collection에서 "author"에 "나연묵"이 포함된 Document를 출력하라.
+
+db.books.find( {author : "나연묵"} )
+
+2)"books" Collection에서 "author"가 ["나연묵" , "최종무", "박기웅"]인 첫 번째 Document를 출력하라.
+db.books.findOne( {author : ["나연묵" , "최종무", "박기웅"]} )
+3)"books" Collection에서 "author"에 "장희동", "조성연"이 포함된 Document 중에서 "maintitle", "subtitle", "review", "price", "author"만 출력하라.
+db.books.find( {author : {$all : ["장희동", "조성연"]}}, {_id : 0, maintitle : 1, subtitle : 1, review : 1, price : 1, author : 1} )
+4)"books" Collection에서 "subtitle"의 첫 번째 Data가 "개념 기술 구축체험"인 첫 번째 Document 중에서 "_id", "translator", "supervise", "date", "preview", "rank"를 제외하고 출력하라.
+db.books.findOne( {"subtitle.0" : "개념 기술 구축체험"}, {_id : 0, translator : 0, supervise : 0, date : 0, preview : 0, rank : 0} )
+5)"books" Collection에서 "author"의 개수가 3개인 Document 중에서 "maintitle", "subtitle", "review", "price.sale", "author"만 출력하라. 단 "subtitle"는 1개만 출력하라.
+db.books.find( {author : {$size : 3}}, {_id : 0, maintitle : 1, subtitle : {$slice : 1}, review : 1, "price.sale" : 1, author : 1} )
+---기타($where,$exists)
+1)"books" Collection에서 "author"가 2명 이상인 Document 중에서 "maintitle", "subtitle", "review", "price", "author"만 출력하라.
+db.books.find({$where : "this.author.length >= 2"}, {_id : 0, maintitle : 1, subtitle : 1, review : 1, price : 1, author : 1})
+2)"books" Collection에서 "maintitle"의 글자수가 10글자 이상인 첫 번째 Document 중에서 "_id", "translator", "supervise", "preview", "rank"를 제외하고 출력하라.
+db.books.findOne({$where : "this.maintitle.length > 10"}, {_id : 0, translator : 0, supervise : 0, preview : 0, rank : 0})
+3)"books" Collection에서 "review"가 존재하는 Document 중에서 "maintitle", "subtitle", "review", "price", "author"만 출력하라.
+db.books.find({review : { $exists : true }}, {_id : 0, maintitle : 1, subtitle : 1, review : 1, price : 1, author : 1})
+4)"books" Collection에서 "price"의 "sale"가 존재하지 않는 첫 번째 Document 중에서 "_id", "translator", "supervise", "preview", "rank"를 제외하고 출력하라.
+db.books.findOne({"price.sale" : { $exists : false }}, {_id : 0, translator : 0, supervise : 0, preview : 0, rank : 0})
+---보조명령
+1)"books" Collection의 모든 Document를 "maintitle" 순서로 오름차순 정렬하여 "maintitle", "subtitle", "review", "price", "author"만 출력하라. 단, subtitle와 author은 1개만 출력하라.
+db.books.find( { }, {_id : 0, maintitle : 1, subtitle : {$slice : 1}, review : 1, price : 1, author : {$slice : 1}} ).sort( { maintitle : 1 } )
+
+2)"books" Collection에서 "price"의 "net" 순서로 내림차순 정렬하여 "_id", "translator", "supervise", "preview", "rank"를 제외하고 출력하라.
+db.books.find( {}, {_id : 0, translator : 0, supervise : 0, preview : 0, rank : 0} ).sort( {"price.net" : -1} )
+3)"books" Collection에서 "author"이 한사람인 Document의 개수를 출력하라.
+db.books.find( {author : {$size : 1}} ).count()
+4)"books" Collection의 모든 Document를 "author" 순서로 오름차순 정렬하여 "maintitle", "subtitle", "review", "price", "author"만 출력하라. 단, 처음 10개는 제외하고 출력하라.
+db.books.find( {}, {_id : 0, maintitle : 1, subtitle : 1, review : 1, price : 1, author : 1} ).sort({author : 1}).skip(10)
+5)"books" Collection의 모든 Document를 "date" 순서로 내림차순 정렬하여 "_id", "translator", "supervise", "preview", "rank"를 제외하고 출력하라. 단, 처음 5개는 제외하고 10개만 출력하라.
+db.books.find( {}, {_id : 0, translator : 0, supervise : 0, preview : 0, rank : 0} ).sort({date : -1}).skip(5).limit(10)

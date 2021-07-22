@@ -1,0 +1,145 @@
+1)
+
+use findTest
+
+2)
+
+db.books.insert( { _id : 1, maintitle : "데이터 분석을 위한 판다스 입문", author : ["다니엘 첸"], translator : ["김영하"], publishing : "이지스퍼블리싱", date : "2018-10-11", price : {net : 17000, sale : 15300 } } )
+
+db.books.insert( {_id : 2, maintitle : "블록체인 무엇인가?", subtitle : ["전 세계 사람들이 주목하는 블록체인 입문서!", "수학, 코딩 몰라도 이해하는 비유의 힘"], author : ["다니엘 드레셔"], translator : ["이병욱"], supervise : ["로렌스 커크"], publishing : "이지스퍼블리싱", date : "2018-02-19", price : {net : 15000, sale : 13500}, review : 3, rank : 19} )
+
+db.books.insert( [ {_id : 3, maintitle : "개발자도 궁금한 IT 인프라", subtitle : ["하룻밤에 읽는 개궁금 IT 팟캐스"], author : ["정송화", "김영선", "전성민"], publishing : "제이펍", date : "2018-06-11", price : {net : 20000, sale : 18000}, rank :  102},
+
+{_id : 4, maintitle : "네이버 메인노출 마케팅", subtitle : ["메인노출 준비하기", "분석하기", "콘텐츠 만들기", "진행하기", "관리하기"], author : ["바이컴퍼니"], publishing : "앤써북", date : "2018-06-25", price : {net : 16500, sale : 14850}, review : 3} ] )
+
+
+
+
+db.books.insert( [{_id : 5, maintitle : "클라우드 컴퓨팅 ", subtitle : ["개념 기술 구축체험"], author : ["나연묵" , "최종무", "박기웅"], publishing : "홍릉과학출판사", date : "2016-11-21", price : {net : 28000} },
+
+{_id : 6, maintitle : "그림으로 배우는 클라우드", subtitle : ["클라우드 서비스의 종류 및 개요부터 기술, 도입, 실제 사례까지"], author : ["하야시 미사유키"], translator : ["서재원"], publishing : "영진닷컴", date : "2017-06-01", price : {net : 16000, sale : 14400} }] )
+
+
+
+
+
+
+
+var m = {_id : 7, maintitle : "최신 IT 트렌드", author : ["Saito Masanori"], translator : ["이영란"], publishing : "정보문화사", date : "2017-11-10", price : {net : 15000, sale : 13500}, review : 3 }
+
+db.books.insert(m)
+
+
+
+
+
+
+
+var m = {_id : 8, maintitle : "수학으로 이해하는 암호의 원리", subtitle : ["고대 시저 암호부터 현대 디지털 암호까지"], author : ["조슈아 홀던"], translator : ["허성심"], publishing : "프리렉", date : "2017-11-30", price : {net : 25000, sale : 22500} }
+
+db.books.insert(m)
+
+
+
+
+var arr = [{_id : 9, maintitle : "만약 헤밍웨이가 자바스크립트로 코딩한다면", subtitle : ["피보나치, 팩토리얼, 행복수, 소수, 메서드 체인에 대한", "문학 거장들의 기발한 해법"], author : ["앵거스 크롤"], translator : ["김나솔"], publishing : "한빛미디어", date : "2016-11-01", price : {net : 19000, sale : 17100}, review : 3 },
+
+{_id : 10, maintitle : "IT 전문가로 사는 법", subtitle : ["IT 개발자, 엔지니어, 컨설턴트의 길을 걸어가는 당신을 위한 안내서"], author : ["장동인"], publishing : "한빛미디어", date : "2016-11-30", price : {net : 14800, sale : 13320}, review : 1 }]
+
+db.books.insert(arr)
+
+
+
+
+
+
+
+var arr = [{_id : 11, maintitle : "그럼에도 불구하고 너무나 인간적인", subtitle : ["대한민국 개발자로 산다는 것"], author : ["엄태형"], publishing : "루비페이퍼", date : "2017-09-05", price : {net : 20000, sale : 18000} },
+
+{_id : 12, maintitle : "4차 산업혁명, 미래를 바꿀 IT 트렌드", subtitle : ["미래를 내 편으로 만드는 기술"], author : ["Saito Masanori"], translator : ["이영란"], publishing : "정보문화사 ", date : "2017-07-25", price : {net : 15000, sale : 13500} }]
+
+db.books.insert(arr)
+
+
+
+
+db.books.insertOne({_id : 13, maintitle : "융합형 기능성 콘텐츠 개발", author : ["박성준", "김경식", "장희동", "조성연", "안준희", "김혜원"], publishing : "홍릉과학출판사", date : "2017-03-10", price : {net : 15000}  })
+
+db.books.insertOne({_id : 14, maintitle : "4차 산업혁명, 비즈니스 트렌드", subtitle : ["가상현실, 증강현실, 융합현실편"], author : ["김민구"], publishing : "정보문화사 ", date : "2017-03-15", price : {net : 15000, sale : 13500} })
+
+db.books.insertMany( [{_id : 15, maintitle : "그린IT 클라우드 컴퓨팅의 시장현황과 미래전략", author : ["BIR Research Group"], publishing : "BIR", date : "2011-04-18", price : {net : 250000, sale : 225000} },
+
+{_id : 16, maintitle : "스마트한 소셜미디어 세상", author : ["황의철"], publishing : "21세기사 ", date : "2016-03-02", price : {net :   18000} }] )
+
+
+
+
+db.books.insertMany( [{_id : 17, maintitle : "최신 IoT 사물인터넷", subtitle : ["모든 사물이 인터넷과 연결되는 세계"], author : ["Koizumi Koji"], translator : ["이영란"], publishing : "정보문화사 ", date : "2017-01-10", price : {net : 12000, sale : 10800} }] )
+
+db.books.save({_id : 18, maintitle : "시스템 성능구조 + IT 인프라구조", author : ["야마자키 야스시외", "미나와 요시코", "아제카츠 요헤이", "사토 타카히코"], translator : ["김완섭"], supervise : ["오다 케이지"], publishing : "제이펍", price : {net : 50000, sale : 45000}  })
+
+
+
+
+db.books.save({_id : 19, maintitle : "점프 투 파이썬", author : ["박응용"], publishing : "이지스퍼블리싱", date : "2016-03-03", price : {net : 18800, sale : 16920}, review : 6, rank :  1})
+
+
+
+
+db.books.bulkWrite( [ {insertOne : {"document" : {_id : 20, maintitle : "머신러닝 탐구생활", subtitle : ["파이썬을 활용한 머신러닝 실전 예제 분석"], author : ["정권우"], translator : ["김범준"], publishing : "비제이퍼블릭", price : {net : 27000, sale : 24300}, rank :  12}} } ] )
+
+db.books.find()
+
+
+
+
+3)
+
+db.inventory.insertMany( [
+
+{ item : "Scissors", qty : 25, tags : ["blank"], dim_cm : [14.0, 21.1], size : {h : 4.0, w : 2.2, uom : "cm" }, status : "A", instock : [ {warehouse : "A", qty : 5}, {warehouse : "A", qty : 15} ] },
+
+{ item : "Ballpoint pens", qty : 50, tags : ["red", "blue"], dim_cm : [12.7, 20.7], size : {h : 8.5, w : 1.7, uom : "in" }, status : "B", instock : [{warehouse : "C", qty: 15}] },
+
+{ item : "Pencils", qty : 95, tags : ["plain", "yellow", "blank"], dim_cm : [11.3, 23.2], size : {h : 8.2, w : 1.5, uom : "in"}, status : "D", instock : [{warehouse : "A", qty : 6}, {warehouse : "C", qty : 5}, {warehouse : "C", qty : 18}] },
+
+{ item : "Ruler", qty : 75, tags : ["red"], dim_cm : [22.6, 31.1], size : {h : 2.8, w : 3.2, uom : "cm"}, status : "B", instock : [{warehouse : "D", qty : 4}, {warehouse : "B", qty : 16}] },
+
+{ item : "Colored pencil", qty : 45, tags : ["blue", "plain"], dim_cm : [12.7, 15.5], size : {h : 1.7, w : 5.5, uom : "in"}, status : "C", instock : [{warehouse : "B", qty : 7}, {warehouse : "A", qty : 13}, {warehouse : "B", qty : 37}] },
+
+{ item : "Mechanical pencil", qty : 30, tags : ["yellow", "blank", "red"], dim_cm : [12.1, 22.9], size : {h : 4.1, w : 2.1, uom : "cm" }, status : "A", instock : [{warehouse : "A", qty : 10}, {warehouse : "C", qty : 12}] },
+
+{ item : "Eraser", qty : 10, tags : ["blue"], dim_cm : [18.2, 22.1], size : {h : 8.2, w : 1.9, uom : "in" }, status : "C", instock : [{warehouse : "C", qty: 12}] },
+
+{ item : "Notebook", qty : 80, tags : ["plain", "yellow"], dim_cm : [15.7, 29.4], size : {h : 8.9, w : 1.4, uom : "in"}, status : "D", instock : [{warehouse : "D", qty : 16}, {warehouse : "B", qty : 17}] },
+
+{ item : "Protractor", qty : 70, tags : ["blank", "red", "blue"], dim_cm : [23.9, 34.2], size : {h : 2.5, w : 3.3, uom : "cm"}, status : "A", instock : [{warehouse : "A", qty : 14}] },
+
+{ item : "Crayon", qty : 55, tags : ["plain", "yellow"], dim_cm : [13.1, 15.2], size : {h : 1.8, w : 5.8, uom : "cm"}, status : "B", instock : [{warehouse : "B", qty : 19}, {warehouse : "C", qty : 35}, {warehouse : "A", qty : 13}]} ] )
+
+db.inventory.find()
+
+
+
+
+4)
+
+db.order.insert([{"_id" : 1, "item" : {"category" : "cake", "type" : "chiffon"}, "amount" : 100, sale : "yes"},
+
+{"_id" : 2, "item" : {"category" : "cookies", "type" : "chocolate chip"}, "amount" : 500},
+
+{"_id" : 3, "item" : {"category" : "bread", "type" : "strawberry"}, "amount" : 150},
+
+{"_id" : 4, "item" : {"category" : "candy", "type" : "lemon"}, "amount" : 300, sale : "yes"},
+
+{"_id" : 5, "item" : {"category" : "biscuit", "type" : "carrot"}, "amount" : 200},
+
+{"_id" : 6, "item" : {"category" : "drink", "type" : "cider"}, "amount" : 110},
+
+{"_id" : 7, "item" : {"category" : "ramen", "type" : "blondie"}, "amount" : 210},
+
+{"_id" : 8, "item" : {"category" : "spacetti", "type" : "seafood"}, "amount" : 450, sale : "yes"},
+
+{"_id" : 9, "item" : {"category" : "pizza", "type" : "combination"}, "amount" : 215, sale : "yes"},
+
+{"_id" : 10, "item" : {"category" : "chicken", "type" : "filling"}, "amount" : 530}])

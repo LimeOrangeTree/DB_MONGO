@@ -1,0 +1,113 @@
+--path 추가
+C:\Program Files\MongoDB\Server\4.0\bin;
+--
+E:\big\mongo\data
+E:\big\mongo\log
+
+--서비스 등록
+관리자권한으로 cmd 실행
+
+mongod --remove
+mongod --dbpath=E:\big\mongo\data 
+  --logpath=E:\big\mongo\log\log.txt --install
+---------
+mongo 
+show dbs 
+--현재 사용중 db확인
+db
+db.book.insert({"name":"Python","price":20000});
+show dbs
+--db생성
+use 데이터베이스명
+use pythondb
+show dbs
+db.product.save({"name":"pencil","price":2000});
+show dbs
+--db 삭제
+db.dropDatabase()
+--
+use mongotest
+--컬렉션(table의 개념)
+db.createCollection(컬렉션명, 옵션)
+db.createCollection('book')
+옵션 (capped : 고정크기
+    size :최대메모리공간
+    max :문서의 갯수 지정)
+db.createCollection('book1',{
+   capped:true,
+   size:6142800,
+   max:10000
+})
+--collection 확인
+show collections
+use test
+show collections
+--collection 삭제
+db.컬렉션명.drop()
+db.book.drop()
+---mongotest db에 명시적으로 emp 컬렉션을 생성, 묵시적으로 dept 컬렉션 생성
+use mongotest
+db.createCollection('emp')
+db.dept.insert({'deptno':10,'dname':'sales'})
+show collections
+--insert
+db.컬렉션명.insert({문서})
+db.emp.insert({'ename':'홍길동','deptno':10,'pay':10000,'height':180})
+db.emp.find()
+m={'ename':'심청','city':'서산','pay':20000,'height':170,'hobby':'낚시'}
+db.emp.insert(m)
+db.emp.find()
+db.emp.insert([{'ename':'콩쥐','city':'양산','pay':20000},
+{'ename':'팥쥐','city':'울산','pay':20000,'deptno':20}])
+db.emp.find()
+
+db.phone.insert({"_id":1,"maker":"삼성","price":100000,"qty":10})
+db.phone.find()
+db.phone.insert({"_id":1,"maker":"LG","price":100000,"qty":5})
+db.phone.insert({"_id":2,"maker":"LG","price":100000,"qty":5})
+--
+db.book.insert({_id:1,maintitle:"Do it! 점프 투 파이썬",
+author:["박응용"],publishing:"이지스퍼블리싱",
+date:"2016-03-03",price:{net:18800,sale:16920}})
+db.book.find()
+db.book.insert({_id:2,maintitle:"블록체인 구조와 이론",
+subtitle:"비트코인,암호학"
+,author:["조성현","이광성","박혜리"],publishing:"위키북스",
+date:"2019-05-02",price:{net:27000},review:3,rank:5})
+db.book.find()
+--insertOne()
+db.emp.insertOne({'ename':'장화',deptno:50})
+db.emp.find()
+db.emp.insertOne([{'ename':'장화',deptno:50},{'ename':'홍련',deptno:50}])
+db.emp.insertMany([{'ename':'장화',deptno:50},{'ename':'홍련',deptno:50}])
+db.emp.insertMany({'ename':'철수',deptno:50})
+db.emp.insertMany([{'ename':'철수',deptno:50}])
+--save
+db.book.save({_id:3,maintitle:"삼국지",price:60000,publishing:'위키북스'})
+db.book.find()
+db.book.save({_id:3,maintitle:"백설공주",price:10000,publishing:'한빛미디어'})
+db.book.find()
+use createTest
+var height=170
+for(var i=0;i<10;i++){
+    db.emp.insertOne({"ename":'연습'+i,height:height+i})
+}
+--bulkWrite():원하는 명령을 수행토록 하는 명령어
+
+db.컬렉션명.bulkWrite([{명령어:{"document":document}}])
+명령어:insertOne,updateOne,deleteOne,updateMany,deleteMany,
+replaceOne
+
+db.emp.bulkWrite([{insertOne:{"document":{'ename':'영희',deptno:50}}}])
+
+==
+mtdi 데이터 베이스를 생성하여
+student 컬렉션 생성
+변수 s1에 우리반 여자분들 저장하여 student 테이블에 입력
+save 이용하여 오늘 휴가자 등록
+bulkWrite 를 이용하여 본인 등록
+insertMany 이용하여 남은 사람 등록
+
+--mongotest 디비 삭제(내일)
+
+
